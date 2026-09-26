@@ -21,11 +21,11 @@
 #define HiMemEnd	(HiMemStart + (0x400*(MMU_SECTION_SIZE)))
 
 #define ExceptionVector MemoryStart
+#define OpenIBootLoad 0x00000000
 #ifdef SMALL
 #define PageTable (OpenIBootLoad + 0x24000)
 #define HeapStart (PageTable + 0x4000)
 #else
-#define OpenIBootLoad 0x00000000
 #define GeneralStack (PageTable - 4)
 #define HeapStart (LargeMemoryStart + 0x02000000)
 #define PageTable (RAMEnd - 0x8000)
@@ -35,6 +35,7 @@
  *	Devices
  */
 
+#define PeripheralPort  0x38000000
 #define AMC0Map			0x84000000
 #define AMC0Start		0x84800000
 #define AMC0Size		(0x8*(MMU_SECTION_SIZE))
