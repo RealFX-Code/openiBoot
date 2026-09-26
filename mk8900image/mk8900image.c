@@ -1,4 +1,5 @@
 #include "nor_files.h"
+#include "abstractfile.h"
 #include <stdio.h>
 #include <string.h>
 #define BUFFERSIZE (1024*1024)
@@ -8,6 +9,20 @@
 #else
 #include <linux/elf.h>
 #include <endian.h>
+#endif
+
+/*
+ * https://stackoverflow.com/questions/152016/detecting-cpu-architecture-compile-time
+ *
+ *	This matches pretty much all X86 variants.
+ * 	Since libxpwn is only available on x86, we only use it on x86.
+ */
+#if defined(__x86_64__) || defined(_M_X64) || defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86)
+#define __we_are_on_x86
+#endif
+
+#ifdef __we_are_on_x86
+extern void init_libxpwn(void);
 #endif
 
 int
@@ -54,7 +69,9 @@ main(int argc, char* argv[])
 	size_t inElfSize;
 	char* outImage;
 	size_t outImageSize;
+#ifdef __we_are_on_x86
 	init_libxpwn();
+#endif
 
 	if (argc < 3) {
 		printf("usage: %s <infile> <outfile> [template] [certificate]\n", argv[0]);
