@@ -265,12 +265,15 @@ HandleIRQ:
 	B	HandleIRQ_lookupHandler
 
 #ifdef ARM11
+/* S5L8920 also defines ARM11, but we don't want doubles. */
+#ifndef CONFIG_S5L8920
 HandleIRQ_checkVIC1:
 	LDR	R3, =(VIC1 + VICIRQSTATUS)	// Check if the interrupt was on VIC1, if it wasn't on VIC0
 	LDR	R3, [R3]
 	CMP	R3, #0
 	BEQ	HandleIRQ_return
 	LDR	R5, =(VIC1 + VICADDRESS)
+#endif
 #endif
 
 #ifdef CONFIG_A4
