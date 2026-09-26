@@ -36,20 +36,28 @@ MK8900IMG := mk8900image/mk8900image
 $(BIN2C): images/bin2c.c
 	$(HOST_CC) -o $@ $<
 
-# On Darwin arm64 the pre-built x86_64 binary runs via Rosetta.
-# On other platforms, build from source.
-UNAME_S := $(shell uname -s)
 UNAME_M := $(shell uname -m)
-ifeq ($(UNAME_S) $(UNAME_M),Darwin arm64)
-$(MK8900IMG):
-	@test -f $@ || (echo "ERROR: mk8900image binary missing from mk8900image/"; exit 1)
-else
+UNAME_S := $(shell uname -s)
 MK8900_LIBS_Darwin      := mk8900image/mac-x86/libxpwn.a mk8900image/mac-x86/libcommon.a
 MK8900_LIBS_Linux_x86_64 := mk8900image/x86_64/libxpwn.a mk8900image/x86_64/libcommon.a
 MK8900_LIBS_Linux       := mk8900image/x86/libxpwn.a mk8900image/x86/libcommon.a
 MK8900_LIBS := $(or $(MK8900_LIBS_$(UNAME_S)_$(UNAME_M)),$(MK8900_LIBS_$(UNAME_S)))
+
+ARM_BUILDHOST := false
+# Set to true if we're building on ARM.
+ifeq ($(UNAME_M), arm64)
+ARM_BUILDHOST := true
+else ifeq ($(UNAME_M), aarch64)
+ARM_BUILDHOST := true
+endif
+
+
 $(MK8900IMG): mk8900image/mk8900image.c $(MK8900_LIBS)
+	@echo ARM_BUILDHOST: $(ARM_BUILDHOST)
+ifeq ($(ARM_BUILDHOST), false)
 	$(HOST_CC) -no-pie -o $@ $< $(MK8900_LIBS) -L/usr/X11/lib -lm -ldl -lpng -lcrypto -lz
+else
+	$(HOST_CC) -no-pie -o $@ $< -L/usr/X11/lib -lm -ldl -lpng -lcrypto -lz
 endif
 
 # ── Source groups ─────────────────────────────────────────────────────────────
@@ -156,7 +164,8 @@ S5L8920_SRC := \
 	plat-s5l8920/spi.c plat-s5l8920/timer.c plat-s5l8920/cdma.c \
 	plat-s5l8920/h2fmi.c plat-s5l8920/uart.c
 S5L8920_INC  := -Iplat-s5l8920/includes
-S5L8920_DEFS := -DARM_A8 -DCONFIG_S5L8920 -DMALLOC_NO_WDT -mcpu=cortex-a8
+#S5L8920_DEFS := -DARM_A8 -DCONFIG_S5L8920 -DMALLOC_NO_WDT -mcpu=cortex-a8
+S5L8920_DEFS := -DARM11 -DCONFIG_S5L8920 -DMALLOC_NO_WDT -mcpu=arm1176jzf-s
 
 A4_SRC := \
 	plat-a4/a4.c plat-a4/aes.c plat-a4/buttons.c plat-a4/chipid.c \
