@@ -1,0 +1,3 @@
+[submodule "mk8900image"]
+	path = mk8900image
+	url = https://github.com/RealFX-Code/mk8900image.git
