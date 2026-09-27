@@ -460,4 +460,40 @@ clean:
 	rm -f $(foreach T,$(TARGETS),$($(T)_OUT).bin $($(T)_OUT).img3)
 	rm -f $(INSTALLER_IMGS)
 
+all: iPhone2G iPhone2GD \
+	iPhone3G iPhone3GD \
+	iPodTouch1G iPodTouch1GD \
+	iPodTouch2G iPodTouch2GD \
+	iPhone3GS iPhone3GSD \
+	iPhone4 iPhone4D \
+	iPad1G iPad1GD \
+	iPodTouch4G iPodTouch4GD \
+	aTV2G aTV2GD \
+	iPhone2G-Installer \
+	iPhone3G-Installer \
+	iPodTouch1G-Installer
+
+# ALL FILES TO BE MADE BY ALL TARGET:
+# iphone_2g_installer.img3
+# iphone_2g_openiboot.img3
+# iphone_2g_openiboot_debug.img3
+# iphone_3g_installer.img3
+# iphone_3g_openiboot.img3
+# iphone_3g_openiboot_debug.img3
+# iphone_3gs_openiboot.bin
+# iphone_3gs_openiboot_debug.bin
+# ipt_1g_installer.img3
+# ipt_1g_openiboot.img3
+# ipt_1g_openiboot_debug.img3
+# ipt_2g_openiboot.img3
+# ipt_2g_openiboot_debug.img3
+# iphone_4_openiboot.bin
+# iphone_4_openiboot_debug.bin
+# ipad_1g_openiboot.bin
+# ipad_1g_openiboot_debug.bin
+# ipt_4g_openiboot.bin
+# ipt_4g_openiboot_debug.bin
+# atv_2g_openiboot.bin
+# atv_2g_openiboot_debug.bin
+
 .PHONY: help docs clean
