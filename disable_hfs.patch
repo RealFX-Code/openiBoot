@@ -1,0 +1,54 @@
+diff --git a/scripting.c b/scripting.c
+index 150777b..1b3f648 100644
+--- a/scripting.c
++++ b/scripting.c
+@@ -22,47 +22,15 @@
+  */
+ 
+ #include "openiboot.h"
++#include <stdarg.h> // Since HFS is ded, let's not
+ #include "commands.h"
+ #include "nvram.h"
+-#include "hfs/common.h"
+-#include "hfs/bdev.h"
+-#include "hfs/fs.h"
+-#include "hfs/hfsplus.h"
+ #include "printf.h"
+ #include "util.h"
+ 
+ uint8_t *script_load_hfs_file(int disk, int part, char *path, uint32_t *size)
+ {
+-	bdevfs_device_t *dev = bdevfs_open(disk, part);
+-	if(!dev)
+-	{
+-		bufferPrintf("fs: Cannot open partition hd%d,%d.\n", disk, part);
+-		return NULL;
+-	}
+-
+-	HFSPlusCatalogRecord* record;
+-	char *name;
+-	uint8_t *address;
+-	uint32_t sz = 0;
+-	record = getRecordFromPath(path, dev->volume, &name, NULL);
+-	if(record != NULL)
+-	{
+-		if(record->recordType == kHFSPlusFolderRecord)
+-			bufferPrintf("scripting: That path leads to a directory!\n");
+-		else
+-			sz = readHFSFile((HFSPlusCatalogFile*)record, &address, dev->volume);
+-	}
+-	else
+-		bufferPrintf("scripting: No such file or directory %s.\n", path);
+-
+-	bdevfs_close(dev);
+-
+-	if(address)
+-	{
+-		*size = sz;
+-		return address;
+-	}
+-
++	bufferPrintf("fs: HFS support not built into this image.\n");
+ 	return NULL;
+ }
+ 

@@ -19,8 +19,14 @@
 #include "wdt.h"
 #include "audiocodec.h"
 
+#include "hardware/s5l8920.h"
+
 void platform_init()
 {
+
+	/* Kill WDT */
+	SET_REG(WDT_CTRL, WDT_CLR | WDT_DIS); // no plat-s5l8920/wdt.c exists; kill the WDT immediately
+
 	arm_setup();
 	mmu_setup();
 
