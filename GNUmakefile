@@ -36,29 +36,8 @@ MK8900IMG := mk8900image/mk8900image
 $(BIN2C): images/bin2c.c
 	$(HOST_CC) -o $@ $<
 
-UNAME_M := $(shell uname -m)
-UNAME_S := $(shell uname -s)
-MK8900_LIBS_Darwin      := mk8900image/mac-x86/libxpwn.a mk8900image/mac-x86/libcommon.a
-MK8900_LIBS_Linux_x86_64 := mk8900image/x86_64/libxpwn.a mk8900image/x86_64/libcommon.a
-MK8900_LIBS_Linux       := mk8900image/x86/libxpwn.a mk8900image/x86/libcommon.a
-MK8900_LIBS := $(or $(MK8900_LIBS_$(UNAME_S)_$(UNAME_M)),$(MK8900_LIBS_$(UNAME_S)))
-
-ARM_BUILDHOST := false
-# Set to true if we're building on ARM.
-ifeq ($(UNAME_M), arm64)
-ARM_BUILDHOST := true
-else ifeq ($(UNAME_M), aarch64)
-ARM_BUILDHOST := true
-endif
-
-
-$(MK8900IMG): mk8900image/mk8900image.c $(MK8900_LIBS)
-	@echo ARM_BUILDHOST: $(ARM_BUILDHOST)
-ifeq ($(ARM_BUILDHOST), false)
-	$(HOST_CC) -no-pie -o $@ $< $(MK8900_LIBS) -L/usr/X11/lib -lm -ldl -lpng -lcrypto -lz
-else
-	$(HOST_CC) -no-pie -o $@ $< -L/usr/X11/lib -lm -ldl -lpng -lcrypto -lz
-endif
+$(MK8900IMG):
+	$(MAKE) -C mk8900image mk8900image
 
 # ── Source groups ─────────────────────────────────────────────────────────────
 
